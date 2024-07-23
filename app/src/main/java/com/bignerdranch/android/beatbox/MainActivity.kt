@@ -1,23 +1,31 @@
 package com.bignerdranch.android.beatbox
 
+import android.content.res.AssetManager
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
-import androidx.activity.enableEdgeToEdge
+import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.beatbox.databinding.ActivityMainBinding
 import com.bignerdranch.android.beatbox.databinding.ListItemSoundBinding
 
+private const val TAG = "Main"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var beatBox: BeatBox
 
+    private val beatBoxViewModel by lazy { ViewModelProvider(this, BeatBoxFactoryModel(assets)).get(BeatBoxViewModel::class.java) }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        beatBox = BeatBox(assets)
+        beatBox = beatBoxViewModel.beatBox
 
 //        enableEdgeToEdge()
 
@@ -26,11 +34,24 @@ class MainActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(context, 3)
             adapter = SoundAdapter(beatBox.sounds)
         }
+
+        binding.changeRate.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                Log.d(TAG, "progress -> $progress")
+                beatBox.rate = (progress / 10.0).toFloat()
+                Log.d(TAG, "rate -> ${beatBox.rate}")
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
+
+        })
     }
 
     private inner class SoundHolder(private val binding: ListItemSoundBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
-            binding.viewModel = SoundViewModel()
+            binding.viewModel = SoundViewModel(beatBox)
         }
 
         fun bind(sound: Sound) {
