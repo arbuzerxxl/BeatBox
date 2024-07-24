@@ -2,7 +2,6 @@ package com.bignerdranch.android.beatbox
 
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.lifecycle.ViewModel
 
 class SoundViewModel(private val beatBox: BeatBox) : BaseObservable() {
     fun onButtonClicked() {

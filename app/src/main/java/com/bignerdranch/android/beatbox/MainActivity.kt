@@ -1,6 +1,5 @@
 package com.bignerdranch.android.beatbox
 
-import android.content.res.AssetManager
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -19,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var beatBox: BeatBox
 
-    private val beatBoxViewModel by lazy { ViewModelProvider(this, BeatBoxFactoryModel(assets)).get(BeatBoxViewModel::class.java) }
+    private val beatBoxViewModel by lazy { ViewModelProvider(this, BeatBoxFactoryModel(assets))[BeatBoxViewModel::class.java] }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
